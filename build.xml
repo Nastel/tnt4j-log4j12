@@ -15,8 +15,7 @@
   <property name="lib"       value="lib"/>
   <property name="classes"   value="classes"/>
   <property name="doc"       value="${project-build}/doc"/>
-  <property name="pkg"       value="${project-build}/tnt4j-log4j"/>
-  <property name="jar"       value="${project-build}/tnt4j-log4j.jar"/>
+  <property name="jar"       value="${project-build}/tnt4j-log4j12.jar"/>
 
   <target name="init">
     <tstamp/>
