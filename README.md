@@ -1,3 +1,81 @@
 # tnt4j-log4j12
 Log4J 1.2  Appender for TNT4J
 
+### LOG4J Appender
+All LOG4J messages can be routed to TNt4J event sinks via `TNT4JAppender` for Log4J, 
+which allows developers to send event messages to TNT4J.
+
+Developers may also enrich event messages and pass context to TNT4J using hash tag enrichment scheme.
+Hash tags are used to decorate event messages with important meta data about each log message. 
+This meta data is used to generate TNT4J tracking events:
+```java
+logger.info("Starting a tnt4j activity #beg=Test, #app=" + Log4JTest.class.getName());
+logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 Test warning message'");
+logger.error("Second log message #app=" + Log4JTest.class.getName() + ", #msg='2 Test error message'", new Exception("test exception"));
+logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName() + " #%i/order-no=" + orderNo  + " #%d:currency/amount=" + amount);
+```
+Above example groups messages between first and last into a related logical collection called `Activity`. Activity is a collection of logically related events/messages. Hash tags `#beg`, `#end` are used to demarcate activity boundaries. This method also supports nested activities.
+
+User defined fields can be reported using `#[data-type][:value-type]/your-metric-name=your-value` convention (e.g. `#%i/order-no=62627` or `#%d:currency/amount=50.45`). 
+`TNT4JAppender` supports the following optional `data-type` qualifiers:
+```
+	%i/ -- integer
+	%l/ -- long
+	%d/ -- double
+	%f/ -- float
+	%b/ -- boolean
+	%n/ -- number
+	%s/ -- string
+```
+All `value-type` qualifiers are defined in `com.nastel.jkool.tnt4j.core.ValueTypes`. Examples:
+```
+	currency 	-- generic currency
+	flag 		-- boolean flag
+	age 		-- age in time units
+	guid 		-- globally unique identifier
+	guage		-- numeric gauge
+	counter		-- numeric counter
+	percent		-- percent
+	timestamp	-- timestamp
+	addr 		-- generic address
+```
+Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. 
+First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`).
+User defined fields are reported as a TNT4J snapshot with `Log4j` category and snapshot name set to 
+activity name set by `#beg`, `#end`, `#opn` tags.
+
+Below is a sample log4j appender configuration:
+```
+### Default TNT4J Appender configuration
+log4j.appender.tnt4j=com.nastel.jkool.tnt4j.logger.log4j.TNT4JAppender
+log4j.appender.tnt4j.SourceName=com.log4j.Test
+log4j.appender.tnt4j.SourceType=APPL
+log4j.appender.tnt4j.MetricsOnException=true
+log4j.appender.tnt4j.MetricsFrequency=60
+log4j.appender.tnt4j.layout=org.apache.log4j.PatternLayout
+log4j.appender.tnt4j.layout.ConversionPattern=%d{ABSOLUTE} %-5p [%c{1}] %m%n
+```
+Running Samples
+===============================================
+* Simple TNT4J Sample application (`com.nastel.jkool.tnt4j.examples.TNT4JTest`):
+```java	
+java -javaagent:tnt4j-api.jar -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.token.repository=config/tnt4j-tokens.properties  -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand"  TestLocation
+```
+<b>Command line arguments:</b>
+* `-javaagent:tnt4j-api.jar` command line option is required by `ObjectDumpProvider` to calculate object deep and shallow memory sizes. Use this only if your application makes use of `ObjectDumpProvider` to dump object state.
+* `-Dtnt4j.dump.on.vm.shutdown=true` java property allows application state dumps generated automatically upon VM shutdown.
+* `-Dtnt4j.dump.provider.default=true` java property registers all default dump providers (memory, stack, logging stats).
+* `-Dtnt4j.formatter.json.newline=true` java property directs `JSONFormatter` to append new line when formatting log entries.
+
+See `<timestamp>.log` and `<vmid>.dump` file for output produced by `com.nastel.jkool.tnt4j.examples.TNT4JTest`.
+See `config/tnt4j.properties` for TNT4J configuration: factories, formatters, listeners, etc. See Wiki for more information.
+
+How to Build tnt4j-log4j12
+=========================================
+Requirements
+* JDK 1.7+
+* ANT (http://ant.apache.org/)
+
+TNT4J-LOG4J12 depends on the following external packages:
+* TNT4J-API (http://nastel.github.io/TNT4J/)
+* Apache Log4J 1.2.17 (http://logging.apache.org/log4j/1.2/)
