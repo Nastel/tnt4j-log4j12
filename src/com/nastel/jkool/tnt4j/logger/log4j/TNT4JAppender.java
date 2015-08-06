@@ -315,7 +315,7 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 				event.setMessage(value);
 			} else if (key.equalsIgnoreCase(PARAM_APPL_LABEL)) {
 				event.setSource(logger.getConfiguration().getSourceFactory().newSource(value));
-			} else if (!Utils.isEmpty(key) && !Utils.isEmpty(value)){
+			} else if (!Utils.isEmpty(key) && !Utils.isEmpty(value)) {
 				// add unknown attribute into snapshot
 				if (snapshot == null) {
 					snapshot = logger.newSnapshot(SNAPSHOT_CATEGORY, event.getOperation().getName());
