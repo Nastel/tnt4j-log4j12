@@ -37,6 +37,7 @@ import com.nastel.jkool.tnt4j.logger.AppenderTools;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>Log4j appender for sending log4j events to TNT4j logging framework.</p>
@@ -314,7 +315,7 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 				event.setMessage(value);
 			} else if (key.equalsIgnoreCase(PARAM_APPL_LABEL)) {
 				event.setSource(logger.getConfiguration().getSourceFactory().newSource(value));
-			} else {
+			} else if (!Utils.isEmpty(key) && !Utils.isEmpty(value)){
 				// add unknown attribute into snapshot
 				if (snapshot == null) {
 					snapshot = logger.newSnapshot(SNAPSHOT_CATEGORY, event.getOperation().getName());
