@@ -89,8 +89,8 @@ public class Log4JEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	protected void _log(Source src, OpLevel sev, String msg, Object... args) {
-		logger.log(getL4JLevel(sev), getEventFormatter().format(src, sev, msg, args), Utils.getThrowable(args));
+	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) {
+		logger.log(getL4JLevel(sev), getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 	}
 
 	@Override
