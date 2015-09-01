@@ -96,6 +96,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * <tr><td><b>sev</b></td>				<td>Event severity - Value can be either a member of {@link OpLevel} or any numeric value</td></tr>
  * <tr><td><b>ccd</b></td>				<td>Event completion code - Value must be either a member of {@link OpCompCode} or the equivalent numeric value</td></tr>
  * <tr><td><b>rcd</b></td>				<td>Reason code</td></tr>
+ * <tr><td><b>exc</b></td>				<td>Exception message</td></tr>
  * <tr><td><b>elt</b></td>			    <td>Elapsed time of event, in microseconds</td></tr>
  * <tr><td><b>age</b></td>			    <td>Message/event age in microseconds (useful when receiving messages, designating message age on receipt)</td></tr>
  * <tr><td><b>stt</b></td>			    <td>Start time, as the number of microseconds since epoch</td></tr>
@@ -274,7 +275,8 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 		OpCompCode ccode = getOpCompCode(jev);
 		OpLevel level = getOpLevel(jev);
 
-		TrackingEvent event = logger.newEvent(level, jev.getLocationInformation().getMethodName(), null, eventMsg);
+		TrackingEvent event = logger.newEvent(jev.getLocationInformation().getMethodName(), eventMsg);
+		event.getOperation().setSeverity(level);
 		event.setTag(jev.getThreadName());
 		event.getOperation().setResource(jev.getLocationInformation().getClassName());
 		event.setLocation(jev.getLocationInformation().getFileName() + ":" + jev.getLocationInformation().getLineNumber());
@@ -311,6 +313,8 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 				event.getOperation().setType(OpType.valueOf(value));
 			} else if (key.equalsIgnoreCase(PARAM_OP_NAME_LABEL)) {
 				event.getOperation().setName(value);
+			} else if (key.equalsIgnoreCase(PARAM_EXCEPTION_LABEL)) {
+				event.getOperation().setException(value);
 			} else if (key.equalsIgnoreCase(PARAM_MSG_DATA_LABEL)) {
 				event.setMessage(value);
 			} else if (key.equalsIgnoreCase(PARAM_APPL_LABEL)) {
