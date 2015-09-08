@@ -128,6 +128,7 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 
 	private TrackingLogger logger;
 	private String sourceName;
+	private int maxActivitySize = 100;
 	private SourceType sourceType = SourceType.APPL;
 
 	private boolean metricsOnException = true;
@@ -151,6 +152,24 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 	 */
 	public void setSourceName(String name) {
 		sourceName = name;
+	}
+
+	/**
+	 * Obtain maximum size of any activity
+	 *
+	 * @return source name string that maps to tnt4j configuration
+	 */
+	public int getMaxActivitySize() {
+		return maxActivitySize;
+	}
+
+	/**
+	 * Set maximum size of any activity
+	 *
+	 * @param size maximum size must be greater than 0
+	 */
+	public void setMaxActivitySize(int size) {
+		maxActivitySize = size;
 	}
 
 	/**
@@ -231,6 +250,12 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 				logger.tnt(tev);
 			} else {
 				activity.tnt(tev);
+			}
+			if (activity.getIdCount() >= maxActivitySize) {
+				activity.setException(ex);
+				activity.setStatus(ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END);
+				activity.stop();
+				logger.tnt(activity);
 			}
 		}
 	}
