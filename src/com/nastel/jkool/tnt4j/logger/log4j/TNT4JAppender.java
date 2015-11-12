@@ -18,6 +18,7 @@ package com.nastel.jkool.tnt4j.logger.log4j;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
@@ -35,6 +36,7 @@ import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.logger.AppenderConstants;
 import com.nastel.jkool.tnt4j.logger.AppenderTools;
 import com.nastel.jkool.tnt4j.source.SourceType;
+import com.nastel.jkool.tnt4j.tracker.TimeTracker;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -123,8 +125,6 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants {
 	public static final String SNAPSHOT_CATEGORY = "Log4J";
-
-	private static final ThreadLocal<Long> EVENT_TIMER = new ThreadLocal<Long>();
 
 	private TrackingLogger logger;
 	private String sourceName;
@@ -266,13 +266,8 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 	 *
 	 * @return elapsed nanoseconds since last log4j event
 	 */
-	protected long getElapsedNanosSinceLastEvent() {
-		Long last = EVENT_TIMER.get();
-		long now = System.nanoTime(), elapsedNanos = 0;
-
-		elapsedNanos = last != null? now - last.longValue(): elapsedNanos;
-		EVENT_TIMER.set(now);
-		return elapsedNanos;
+	protected long getUsecsSinceLastEvent() {
+		return TimeUnit.NANOSECONDS.toMicros(TimeTracker.hitAndGet());
 	}
 
 	/**
@@ -292,7 +287,7 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 			String eventMsg,
 			Throwable ex) {
 		int rcode = 0;
-		long elapsedTimeUsec = getElapsedNanosSinceLastEvent()/1000;
+		long elapsedTimeUsec = getUsecsSinceLastEvent();
 		long evTime = jev.getTimeStamp()*1000; // convert to usec
 		long startTime = 0, endTime = 0;
 		Snapshot snapshot = null;
