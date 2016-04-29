@@ -48,7 +48,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  */
 public class Log4JEventSink extends AbstractEventSink {
-	private static final String[] log4JSevMap = { "INFO", "TRACE", "DEBUG", "INFO", "INFO", "WARN", "ERROR", "FATAL",
+	private static final String[] log4JSevMap = { "INFO", "TRACE", "DEBUG", "INFO", "WARN", "WARN", "ERROR", "FATAL",
 	        "FATAL", "FATAL", "FATAL" };
 
 	private static final String[] log4JStatusMap = { "INFO", "INFO", "INFO", "ERROR" };
