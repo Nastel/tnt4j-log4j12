@@ -27,6 +27,9 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
 import com.nastel.jkool.tnt4j.TrackingLogger;
+import com.nastel.jkool.tnt4j.config.ConfigFactory;
+import com.nastel.jkool.tnt4j.config.DefaultConfigFactory;
+import com.nastel.jkool.tnt4j.config.TrackerConfig;
 import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
@@ -35,6 +38,8 @@ import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.logger.AppenderConstants;
 import com.nastel.jkool.tnt4j.logger.AppenderTools;
+import com.nastel.jkool.tnt4j.source.DefaultSourceFactory;
+import com.nastel.jkool.tnt4j.source.SourceFactory;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TimeTracker;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
@@ -130,9 +135,65 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 	private String sourceName;
 	private int maxActivitySize = 100;
 	private SourceType sourceType = SourceType.APPL;
+	private ConfigFactory cFactory = DefaultConfigFactory.getInstance();
 
 	private boolean metricsOnException = true;
 	private long metricsFrequency = 60, lastSnapshot = 0;
+
+	/**
+	 * Create an appender instance without any defaults set.
+	 * 
+	 */
+	public TNT4JAppender() {
+	}
+	
+	/**
+	 * Create an appender instance with default configuration
+	 * and {@code SourceType.APPL} type.
+	 * factory.
+	 * 
+	 * @param source name
+	 */
+	public TNT4JAppender(String source) {
+		this(source, SourceType.APPL);
+	}
+	
+	/**
+	 * Create an appender instance with default configuration
+	 * factory.
+	 * 
+	 * @param source name
+	 * @param type source type, see {@code SourceType}
+	 * @see SourceType
+	 */
+	public TNT4JAppender(String source, SourceType type) {
+		this(source, type, DefaultConfigFactory.getInstance());
+	}
+	
+	/**
+	 * Create an appender instance
+	 * 
+	 * @param source name
+	 * @param type source type, see {@code SourceType}
+	 * @param cf logger configuration factory instance
+	 * @see SourceType
+	 * @see ConfigFactory
+	 */
+	public TNT4JAppender(String source, SourceType type, ConfigFactory cf) {
+		this.setSourceName(source);
+		this.setSourceType(type);
+		this.setConfigFactory(cf);
+	}
+	
+	/**
+	 * Associate a logger configuration factory with this appender
+	 * 
+	 * @param cf logger configuration factory instances
+	 * @see ConfigFactory
+	 */
+	public void setConfigFactory(ConfigFactory cf) {
+		cFactory = cf;
+	}
 
 	/**
 	 * Obtain source name associated with this appender.
@@ -192,16 +253,28 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 		sourceType = SourceType.valueOf(type);
 	}
 
+	/**
+	 * Assign default source type, see {@code SourceType}
+	 *
+	 * @param type source type, see {@code SourceType}
+	 * @see SourceType
+	 */
+	public void setSourceType(SourceType type) {
+		sourceType = type;
+	}
+
 	@Override
 	public void activateOptions() {
 		try {
 			if (sourceName == null) {
 				setSourceName(getName());
 			}
-			logger = TrackingLogger.getInstance(sourceName, sourceType);
+			TrackerConfig config = cFactory.getConfig(sourceName, sourceType);
+			logger = TrackingLogger.getInstance(config.build());
 	        logger.open();
         } catch (IOException e) {
 	        LogLog.error("Unable to create tracker instance=" + getName()
+	        		+ ", config.factory=" + cFactory
 	        		+ ", source=" + sourceName
 	        		+ ", type=" + sourceType, e);
         }
