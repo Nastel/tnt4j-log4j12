@@ -18,6 +18,7 @@ package com.nastel.jkool.tnt4j.logger.log4j;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.AppenderSkeleton;
@@ -61,8 +62,12 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  * <p>This appender supports the following properties:</p>
  * <table cellspacing=10>
- * <tr><td valign=top><b>metricsOnException</b></td><td valign=top>report jvm metrics on exception (true|false)</td></tr>
- * <tr><td valign=top><b>metricsFrequency</b></td><td valign=top>report jvm metrics on every specified number of seconds (only on logging activity)</td></tr>
+ * <tr><td valign=top><b>SourceName</b></td><td valign=top>source name associated with the appender matching tnt4j configuration</td></tr>
+ * <tr><td valign=top><b>SourceType</b></td><td valign=top>source type as defined by {@code SourceType}</td></tr>
+ * <tr><td valign=top><b>SnapshotCategory</b></td><td valign=top>snapshot category name (default is Log4J)</td></tr>
+ * <tr><td valign=top><b>MetricsOnException</b></td><td valign=top>report jvm metrics on exception (true|false)</td></tr>
+ * <tr><td valign=top><b>MetricsFrequency</b></td><td valign=top>report jvm metrics on every specified number of seconds (only on logging activity)</td></tr>
+ * <tr><td valign=top><b>MaxActivitySize</b></td><td valign=top>maximum size of any given activity before it gets flushed (default: 100)</td></tr>
  * </table>
  *
  * <p>This appender by default sets the following TNT4j Activity and Event parameters based on the information
@@ -131,15 +136,19 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 
 	private TrackingLogger logger;
 	private String sourceName;
+	private String snapCategory = SNAPSHOT_CATEGORY;
 	private int maxActivitySize = 100;
 	private SourceType sourceType = SourceType.APPL;
 	private ConfigFactory cFactory = DefaultConfigFactory.getInstance();
+	private Map<String, Properties> cProperties = null;
 
 	private boolean metricsOnException = true;
 	private long metricsFrequency = 60, lastSnapshot = 0;
 
 	/**
-	 * Create an appender instance without any defaults set.
+	 * Create an appender instance without any defaults.
+	 * Have to call {@code setXXX()} calls to configure the appender
+	 * before activation.
 	 * 
 	 */
 	public TNT4JAppender() {
@@ -148,7 +157,6 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 	/**
 	 * Create an appender instance with default configuration
 	 * and {@code SourceType.APPL} type.
-	 * factory.
 	 * 
 	 * @param source name
 	 */
@@ -178,9 +186,37 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 	 * @see ConfigFactory
 	 */
 	public TNT4JAppender(String source, SourceType type, ConfigFactory cf) {
+		this(source, type, cf, null);
+	}
+	
+	/**
+	 * Create an appender instance
+	 * 
+	 * @param source name
+	 * @param type source type, see {@code SourceType}
+	 * @param cProps user defined TNT4J logger properties (null if none)
+	 * @see SourceType
+	 * @see ConfigFactory
+	 */
+	public TNT4JAppender(String source, SourceType type, Map<String, Properties> cProps) {
+		this(source, type, DefaultConfigFactory.getInstance(), cProps);
+	}
+	
+	/**
+	 * Create an appender instance
+	 * 
+	 * @param source name
+	 * @param type source type, see {@code SourceType}
+	 * @param cf logger configuration factory instance
+	 * @param cProps user defined TNT4J logger properties (null if none)
+	 * @see SourceType
+	 * @see ConfigFactory
+	 */
+	public TNT4JAppender(String source, SourceType type, ConfigFactory cf, Map<String, Properties> cProps) {
 		this.setSourceName(source);
 		this.setSourceType(type);
 		this.setConfigFactory(cf);
+		this.setConfigProperties(cProps);
 	}
 	
 	/**
@@ -191,6 +227,26 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 	 */
 	public void setConfigFactory(ConfigFactory cf) {
 		cFactory = cf;
+	}
+
+	/**
+	 * Obtain snapshot category associated with this appender.
+	 * This name is used for reporting user defined metrics
+	 *
+	 * @return snapshot category name string that maps to tnt4j snapshot category
+	 */
+	public String getSnapshotCategory() {
+		return snapCategory;
+	}
+
+	/**
+	 * Set snapshot category associated with this appender.
+	 * This name is used for reporting user defined metrics
+	 *
+	 * @param name snapshot category name
+	 */
+	public void setSnapshotCategory(String name) {
+		snapCategory = name;
 	}
 
 	/**
@@ -232,6 +288,16 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 	}
 
 	/**
+	 * Assign a set of TNT4J streaming properties. These properties
+	 * are used to configure underlying TNT4J {@code TrackingLogger}
+	 * 
+	 * @param cProps user defined TNT4J property map
+	 */
+	public void setConfigProperties(Map<String, Properties> cProps) {
+		cProperties = cProps;
+	}
+
+	/**
 	 * Obtain source type associated with this appender see {@code SourceType}
 	 *
 	 * @return source type string representation
@@ -267,14 +333,16 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 			if (sourceName == null) {
 				setSourceName(getName());
 			}
-			TrackerConfig config = cFactory.getConfig(sourceName, sourceType);
+			TrackerConfig config = ((cProperties == null)? cFactory.getConfig(sourceName, sourceType):  cFactory.getConfig(sourceName, sourceType, cProperties));
 			logger = TrackingLogger.getInstance(config.build());
 	        logger.open();
         } catch (IOException e) {
 	        LogLog.error("Unable to create tracker instance=" + getName()
 	        		+ ", config.factory=" + cFactory
-	        		+ ", source=" + sourceName
-	        		+ ", type=" + sourceType, e);
+	        		+ ", source.name=" + sourceName
+	        		+ ", source.type=" + sourceType
+	        		+ ", snapshot.category=" + snapCategory
+	        		, e);
         }
 	}
 
@@ -413,7 +481,7 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 			} else if (!Utils.isEmpty(key) && !Utils.isEmpty(value)) {
 				// add unknown attribute into snapshot
 				if (snapshot == null) {
-					snapshot = logger.newSnapshot(SNAPSHOT_CATEGORY, event.getOperation().getName());
+					snapshot = logger.newSnapshot(snapCategory, event.getOperation().getName());
 					event.getOperation().addSnapshot(snapshot);
 				}
 				snapshot.add(AppenderTools.toProperty(key, value));
@@ -431,37 +499,30 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 	/**
 	 * Map log4j logging event level to TNT4J {@link OpLevel}.
 	 *
-	 * @param event log4j logging event object
+	 * @param event
+	 *            log4j logging event object
 	 * @return TNT4J {@link OpLevel}.
 	 */
 	private OpLevel getOpLevel(LoggingEvent event) {
 		Level lvl = event.getLevel();
 		if (lvl == Level.INFO) {
 			return OpLevel.INFO;
-		}
-		else if (lvl == Level.FATAL) {
+		} else if (lvl == Level.FATAL) {
 			return OpLevel.FATAL;
-		}
-		else if (lvl == Level.ERROR) {
+		} else if (lvl == Level.ERROR) {
 			return OpLevel.ERROR;
-		}
-		else if (lvl == Level.WARN) {
+		} else if (lvl == Level.WARN) {
 			return OpLevel.WARNING;
-		}
-		else if (lvl == Level.DEBUG) {
+		} else if (lvl == Level.DEBUG) {
 			return OpLevel.DEBUG;
-		}
-		else if (lvl == Level.TRACE) {
+		} else if (lvl == Level.TRACE) {
 			return OpLevel.TRACE;
-		}
-		else if (lvl == Level.OFF) {
+		} else if (lvl == Level.OFF) {
 			return OpLevel.NONE;
-		}
-		else {
+		} else {
 			return OpLevel.INFO;
 		}
 	}
-
 
 	/**
 	 * Map log4j logging event level to TNT4J {@link OpCompCode}.
@@ -473,23 +534,17 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 		Level lvl = event.getLevel();
 		if (lvl == Level.INFO) {
 			return OpCompCode.SUCCESS;
-		}
-		else if (lvl == Level.ERROR) {
+		} else if (lvl == Level.ERROR) {
 			return OpCompCode.ERROR;
-		}
-		else if (lvl == Level.WARN) {
+		} else if (lvl == Level.WARN) {
 			return OpCompCode.WARNING;
-		}
-		else if (lvl == Level.DEBUG) {
+		} else if (lvl == Level.DEBUG) {
 			return OpCompCode.SUCCESS;
-		}
-		else if (lvl == Level.TRACE) {
+		} else if (lvl == Level.TRACE) {
 			return OpCompCode.SUCCESS;
-		}
-		else if (lvl == Level.OFF) {
+		} else if (lvl == Level.OFF) {
 			return OpCompCode.SUCCESS;
-		}
-		else {
+		} else {
 			return OpCompCode.SUCCESS;
 		}
 	}
