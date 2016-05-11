@@ -38,8 +38,6 @@ import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.logger.AppenderConstants;
 import com.nastel.jkool.tnt4j.logger.AppenderTools;
-import com.nastel.jkool.tnt4j.source.DefaultSourceFactory;
-import com.nastel.jkool.tnt4j.source.SourceFactory;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TimeTracker;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
