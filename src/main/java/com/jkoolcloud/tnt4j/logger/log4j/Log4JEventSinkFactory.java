@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.logger.log4j;
+package com.jkoolcloud.tnt4j.logger.log4j;
 
 import java.util.Properties;
 
-import com.nastel.jkool.tnt4j.format.DefaultFormatter;
-import com.nastel.jkool.tnt4j.format.EventFormatter;
-import com.nastel.jkool.tnt4j.sink.AbstractEventSinkFactory;
-import com.nastel.jkool.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.format.DefaultFormatter;
+import com.jkoolcloud.tnt4j.format.EventFormatter;
+import com.jkoolcloud.tnt4j.sink.AbstractEventSinkFactory;
+import com.jkoolcloud.tnt4j.sink.EventSink;
 
 /**
  * <p>Concrete implementation of <code>EventSinkFactory</code> interface over log4j, which
