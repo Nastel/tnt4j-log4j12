@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.logger.log4j;
+package com.jkoolcloud.tnt4j.logger.log4j;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -22,16 +22,16 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 
-import com.nastel.jkool.tnt4j.core.ActivityStatus;
-import com.nastel.jkool.tnt4j.core.OpLevel;
-import com.nastel.jkool.tnt4j.core.OpType;
-import com.nastel.jkool.tnt4j.core.Snapshot;
-import com.nastel.jkool.tnt4j.format.EventFormatter;
-import com.nastel.jkool.tnt4j.sink.AbstractEventSink;
-import com.nastel.jkool.tnt4j.source.Source;
-import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
-import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
-import com.nastel.jkool.tnt4j.utils.Utils;
+import com.jkoolcloud.tnt4j.core.ActivityStatus;
+import com.jkoolcloud.tnt4j.core.OpLevel;
+import com.jkoolcloud.tnt4j.core.OpType;
+import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.format.EventFormatter;
+import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
+import com.jkoolcloud.tnt4j.source.Source;
+import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
+import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
+import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.logger.log4j;
+package com.jkoolcloud.tnt4j.logger.log4j;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,23 +27,23 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
-import com.nastel.jkool.tnt4j.TrackingLogger;
-import com.nastel.jkool.tnt4j.config.ConfigFactory;
-import com.nastel.jkool.tnt4j.config.DefaultConfigFactory;
-import com.nastel.jkool.tnt4j.config.TrackerConfig;
-import com.nastel.jkool.tnt4j.core.ActivityStatus;
-import com.nastel.jkool.tnt4j.core.OpCompCode;
-import com.nastel.jkool.tnt4j.core.OpLevel;
-import com.nastel.jkool.tnt4j.core.OpType;
-import com.nastel.jkool.tnt4j.core.Snapshot;
-import com.nastel.jkool.tnt4j.core.ValueTypes;
-import com.nastel.jkool.tnt4j.logger.AppenderConstants;
-import com.nastel.jkool.tnt4j.logger.AppenderTools;
-import com.nastel.jkool.tnt4j.source.SourceType;
-import com.nastel.jkool.tnt4j.tracker.TimeTracker;
-import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
-import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
-import com.nastel.jkool.tnt4j.utils.Utils;
+import com.jkoolcloud.tnt4j.TrackingLogger;
+import com.jkoolcloud.tnt4j.config.ConfigFactory;
+import com.jkoolcloud.tnt4j.config.DefaultConfigFactory;
+import com.jkoolcloud.tnt4j.config.TrackerConfig;
+import com.jkoolcloud.tnt4j.core.ActivityStatus;
+import com.jkoolcloud.tnt4j.core.OpCompCode;
+import com.jkoolcloud.tnt4j.core.OpLevel;
+import com.jkoolcloud.tnt4j.core.OpType;
+import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.core.ValueTypes;
+import com.jkoolcloud.tnt4j.logger.AppenderConstants;
+import com.jkoolcloud.tnt4j.logger.AppenderTools;
+import com.jkoolcloud.tnt4j.source.SourceType;
+import com.jkoolcloud.tnt4j.tracker.TimeTracker;
+import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
+import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
+import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>Log4j appender for sending log4j events to TNT4j logging framework.</p>

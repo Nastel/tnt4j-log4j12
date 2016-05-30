@@ -13,37 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.examples;
+package com.jkoolcloud.tnt4j.examples;
 
 import java.util.Date;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
 
-import com.nastel.jkool.tnt4j.TrackingLogger;
-import com.nastel.jkool.tnt4j.config.DefaultConfigFactory;
-import com.nastel.jkool.tnt4j.config.TrackerConfig;
-import com.nastel.jkool.tnt4j.core.Activity;
-import com.nastel.jkool.tnt4j.core.ActivityListener;
-import com.nastel.jkool.tnt4j.core.OpLevel;
-import com.nastel.jkool.tnt4j.core.PropertySnapshot;
-import com.nastel.jkool.tnt4j.core.Snapshot;
-import com.nastel.jkool.tnt4j.dump.DefaultDumpProvider;
-import com.nastel.jkool.tnt4j.dump.Dump;
-import com.nastel.jkool.tnt4j.dump.DumpCollection;
-import com.nastel.jkool.tnt4j.dump.DumpEvent;
-import com.nastel.jkool.tnt4j.dump.DumpListener;
-import com.nastel.jkool.tnt4j.dump.DumpProvider;
-import com.nastel.jkool.tnt4j.dump.ObjectDumpProvider;
-import com.nastel.jkool.tnt4j.selector.TrackingSelector;
-import com.nastel.jkool.tnt4j.sink.SinkError;
-import com.nastel.jkool.tnt4j.sink.SinkErrorListener;
-import com.nastel.jkool.tnt4j.sink.SinkLogEvent;
-import com.nastel.jkool.tnt4j.sink.SinkLogEventListener;
-import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
-import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
-import com.nastel.jkool.tnt4j.utils.TimeService;
-import com.nastel.jkool.tnt4j.utils.Utils;
+import com.jkoolcloud.tnt4j.TrackingLogger;
+import com.jkoolcloud.tnt4j.config.DefaultConfigFactory;
+import com.jkoolcloud.tnt4j.config.TrackerConfig;
+import com.jkoolcloud.tnt4j.core.Activity;
+import com.jkoolcloud.tnt4j.core.ActivityListener;
+import com.jkoolcloud.tnt4j.core.OpLevel;
+import com.jkoolcloud.tnt4j.core.PropertySnapshot;
+import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.dump.DefaultDumpProvider;
+import com.jkoolcloud.tnt4j.dump.Dump;
+import com.jkoolcloud.tnt4j.dump.DumpCollection;
+import com.jkoolcloud.tnt4j.dump.DumpEvent;
+import com.jkoolcloud.tnt4j.dump.DumpListener;
+import com.jkoolcloud.tnt4j.dump.DumpProvider;
+import com.jkoolcloud.tnt4j.dump.ObjectDumpProvider;
+import com.jkoolcloud.tnt4j.selector.TrackingSelector;
+import com.jkoolcloud.tnt4j.sink.SinkError;
+import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
+import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
+import com.jkoolcloud.tnt4j.sink.SinkLogEventListener;
+import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
+import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
+import com.jkoolcloud.tnt4j.utils.TimeService;
+import com.jkoolcloud.tnt4j.utils.Utils;
 
 
 /**
