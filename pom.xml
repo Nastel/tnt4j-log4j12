@@ -3,13 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.jkoolcloud.tnt4j.logger</groupId>
-  <artifactId>log4j</artifactId>
-  <version>0.1</version>
+  <artifactId>tnt4j-log4j</artifactId>
+  <version>0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>log4j</name>
+  <name>tnt4j-log4j</name>
   <url>http://www.jkoolcloud.com/</url>
-  <description>Data Streaming, Data Analytics</description>
+  <description>Log4j 1.2 Appender over TNT4J API</description>
   <licenses>
   <license>
     <name>The Apache License, Version 2.0</name>
