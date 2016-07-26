@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.jkoolcloud.tnt4j.logger</groupId>
-    <artifactId>tnt4j-log4j</artifactId>
+    <artifactId>tnt4j-log4j12</artifactId>
     <version>0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>tnt4j-log4j</name>
+    <name>tnt4j-log4j12</name>
     <url>http://www.jkoolcloud.com/</url>
     <description>Log4j 1.2 Appender over TNT4J API</description>
     <licenses>
