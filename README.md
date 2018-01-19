@@ -61,7 +61,7 @@ Running Samples
 ```java	
 java -Dlog4j.configuration=config/log4j.properties -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.token.repository=config/tnt4j-tokens.properties  -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath "./lib/*" com.jkoolcloud.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand"  TestLocation
 ```
-<b>Command line arguments:</b>
+**Command line arguments:**
 * `-Dtnt4j.dump.on.vm.shutdown=true` java property allows application state dumps generated automatically upon VM shutdown.
 * `-Dtnt4j.dump.provider.default=true` java property registers all default dump providers (memory, stack, logging stats).
 * `-Dtnt4j.formatter.json.newline=true` java property directs `JSONFormatter` to append new line when formatting log entries.
