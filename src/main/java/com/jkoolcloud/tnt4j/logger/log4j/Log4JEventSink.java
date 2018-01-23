@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * <code>EventSink</code> implementation that routes log messages to log4j. This implementation is designed to log
- * messages to log4j framework.
+ * {@link com.jkoolcloud.tnt4j.sink.EventSink} implementation that routes log messages to log4j. This implementation is
+ * designed to log messages to log4j framework.
  * </p>
  *
  *
@@ -49,7 +49,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class Log4JEventSink extends AbstractEventSink {
 	private static final String[] log4JSevMap = { "INFO", "TRACE", "DEBUG", "INFO", "WARN", "WARN", "ERROR", "FATAL",
-	        "FATAL", "FATAL", "FATAL" };
+			"FATAL", "FATAL", "FATAL" };
 
 	private static final String[] log4JStatusMap = { "INFO", "INFO", "INFO", "ERROR" };
 
@@ -84,7 +84,7 @@ public class Log4JEventSink extends AbstractEventSink {
 	}
 
 	@Override
-    protected void _log(Snapshot snapshot) {
+	protected void _log(Snapshot snapshot) {
 		logger.log(getL4JLevel(snapshot.getSeverity()), getEventFormatter().format(snapshot));
 	}
 
@@ -99,9 +99,10 @@ public class Log4JEventSink extends AbstractEventSink {
 	}
 
 	/**
-	 * Maps <code>TrackingEvent</code> severity to log4j Level.
+	 * Maps {@link com.jkoolcloud.tnt4j.tracker.TrackingEvent} severity to log4j Level.
 	 *
-	 * @param ev application tracking event
+	 * @param ev
+	 *            application tracking event
 	 * @return log4j level
 	 * @see OpType
 	 */
@@ -110,9 +111,10 @@ public class Log4JEventSink extends AbstractEventSink {
 	}
 
 	/**
-	 * Maps <code>ActivityStatus</code> severity to log4j Level.
+	 * Maps {@link com.jkoolcloud.tnt4j.core.ActivityStatus} severity to log4j Level.
 	 *
-	 * @param status application activity status
+	 * @param status
+	 *            application activity status
 	 * @return log4j level
 	 * @see ActivityStatus
 	 */
@@ -121,9 +123,10 @@ public class Log4JEventSink extends AbstractEventSink {
 	}
 
 	/**
-	 * Maps <code>OpLevel</code> severity to log4j Level.
+	 * Maps {@link com.jkoolcloud.tnt4j.core.OpLevel} severity to log4j Level.
 	 *
-	 * @param sev severity level
+	 * @param sev
+	 *            severity level
 	 * @return log4j level
 	 * @see OpType
 	 */

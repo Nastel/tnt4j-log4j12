@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +23,8 @@ import org.apache.log4j.Logger;
 import com.jkoolcloud.tnt4j.TrackingLogger;
 import com.jkoolcloud.tnt4j.config.DefaultConfigFactory;
 import com.jkoolcloud.tnt4j.config.TrackerConfig;
-import com.jkoolcloud.tnt4j.core.Activity;
-import com.jkoolcloud.tnt4j.core.ActivityListener;
-import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.core.PropertySnapshot;
-import com.jkoolcloud.tnt4j.core.Snapshot;
-import com.jkoolcloud.tnt4j.dump.DefaultDumpProvider;
-import com.jkoolcloud.tnt4j.dump.Dump;
-import com.jkoolcloud.tnt4j.dump.DumpCollection;
-import com.jkoolcloud.tnt4j.dump.DumpEvent;
-import com.jkoolcloud.tnt4j.dump.DumpListener;
-import com.jkoolcloud.tnt4j.dump.DumpProvider;
-import com.jkoolcloud.tnt4j.dump.ObjectDumpProvider;
+import com.jkoolcloud.tnt4j.core.*;
+import com.jkoolcloud.tnt4j.dump.*;
 import com.jkoolcloud.tnt4j.selector.TrackingSelector;
 import com.jkoolcloud.tnt4j.sink.SinkError;
 import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
@@ -45,11 +35,10 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 import com.jkoolcloud.tnt4j.utils.TimeService;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
-
 /**
- * <p> jKool TNT4J Test application that exercises TNT4J API. This application
- * generates a simulated activity with 10 tracking events.
- * Usage: app-name server-name event-msg correlator operation-name location
+ * <p>
+ * jKool TNT4J Test application that exercises TNT4J API. This application generates a simulated activity with 10
+ * tracking events. Usage: app-name server-name event-msg correlator operation-name location
  * </p>
  * 
  * 
@@ -64,10 +53,12 @@ public class TNT4JTest {
 	protected static int activityCount = 0, eventCount = 0;
 
 	private static TrackingLogger tlogger = null;
+
 	/**
 	 * Run TNT4J Test application and generate simulated activity
 	 * 
-	 * @param args Usage: app-name server-name event-msg correlator operation-name
+	 * @param args
+	 *            Usage: app-name server-name event-msg correlator operation-name
 	 */
 	public static void main(String[] args) {
 		if (args.length < 6) {
@@ -76,19 +67,19 @@ public class TNT4JTest {
 		}
 		System.out.println("Current call=" + Utils.getCurrentStackFrame() + ", caller=" + Utils.getCallingStackFrame());
 		System.out.println("Time overhead: " + TimeService.getOverheadNanos());
-		
+
 		// register with the TNT4J framework
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(args[0]);
 		config.setSinkLogEventListener(new MySinkLogHandler());
 		config.setActivityListener(new MyActivityHandler());
-		
-		tlogger = TrackingLogger.getInstance(config.build()); 
+
+		tlogger = TrackingLogger.getInstance(config.build());
 		tlogger.addSinkErrorListener(new MySinkErrorHandler());
 
 		Snapshot begin = tlogger.newSnapshot("Start", "TNT4JTest");
 		begin.add("time-overhead-nanos", TimeService.getOverheadNanos());
 		tlogger.tnt(begin);
-		
+
 		// optionally register application state dump
 		// by default dumps are generated on JVM shutdown
 		TrackingLogger.addDumpListener(new DumpNotify());
@@ -97,12 +88,13 @@ public class TNT4JTest {
 		// create and start an activity
 		TrackingActivity activity = tlogger.newActivity(OpLevel.INFO, "LoggingBenchmark");
 		TrackingLogger.addDumpProvider(new ObjectDumpProvider(args[0], activity));
-		
-		String [] cids = args[3].split(":");
+
+		String[] cids = args[3].split(":");
 		activityCount++;
 		activity.start();
-		for (int i=0; i < 10; i++) {
-			TrackingEvent event = tlogger.newEvent(OpLevel.DEBUG, "runSampleActivity", cids[0], "Running sample={0}", i);
+		for (int i = 0; i < 10; i++) {
+			TrackingEvent event = tlogger.newEvent(OpLevel.DEBUG, "runSampleActivity", cids[0], "Running sample={0}",
+					i);
 			event.setCorrelator(cids);
 			eventCount++;
 			event.start(); // start timing current event
@@ -114,24 +106,26 @@ public class TNT4JTest {
 			}
 		}
 		activity.stop(); // stop activity timing
-		tlogger.tnt(activity);	// log and report activity	
-		
+		tlogger.tnt(activity); // log and report activity
+
 		System.out.println("Logging stats: " + tlogger.getStats());
 		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size());
-		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size() + ", stack.size=" + TrackingLogger.getAllTrackerStackTrace().size());	
-		
+		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size() + ", stack.size="
+				+ TrackingLogger.getAllTrackerStackTrace().size());
+
 		Snapshot end = tlogger.newSnapshot("End", "TNT4JTest");
 		end.add("loggers-size", TrackingLogger.getAllTrackers().size());
 		end.add("stack-size", TrackingLogger.getAllTrackerStackTrace().size());
 		end.setParentId(activity);
 		tlogger.tnt(end);
 
-		for (StackTraceElement stack[]: TrackingLogger.getAllTrackerStackTrace()) {
-			Utils.printStackTrace("Tracker stack trace", stack, System.out);			
+		for (StackTraceElement stack[] : TrackingLogger.getAllTrackerStackTrace()) {
+			Utils.printStackTrace("Tracker stack trace", stack, System.out);
 		}
-		
-		tlogger.close(); //deregister and release all logging resources
-		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size() + ", list=" + TrackingLogger.getAllTrackers());
+
+		tlogger.close(); // deregister and release all logging resources
+		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size() + ", list="
+				+ TrackingLogger.getAllTrackers());
 	}
 
 	static private TrackingActivity runSampleActivity(String msg, String[] cids, String opName, String location) {
@@ -147,18 +141,19 @@ public class TNT4JTest {
 
 			TrackingEvent log4j = runLog4JEvent(msg, opName, OpLevel.valueOf(sev), cids, location, limit);
 			log4j.setLocation(location);
-		
-			if (tlogger.isSet(OpLevel.INFO, "tnt4j.test.location", location)){
+
+			if (tlogger.isSet(OpLevel.INFO, "tnt4j.test.location", location)) {
 				activity.tnt(ev4j);
 				activity.tnt(log4j);
 			}
 		}
 		activity.stop();
-		tlogger.tnt(activity);	
+		tlogger.tnt(activity);
 		return activity;
 	}
-	
-	static private TrackingEvent runTNT4JEvent(String msg, String opName, OpLevel sev, String[] cids, String location, int limit) {
+
+	static private TrackingEvent runTNT4JEvent(String msg, String opName, OpLevel sev, String[] cids, String location,
+			int limit) {
 		TrackingEvent event = tlogger.newEvent(sev, opName, cids[0], msg);
 		event.setCorrelator(cids);
 		eventCount++;
@@ -172,12 +167,14 @@ public class TNT4JTest {
 			}
 		} finally {
 			event.stop();
-			tlogger.info("runTNT4JEvent: runs=\"{0}\", elapsed.nsec={1}, nsec/call={2}", limit, event.getOperation().getElapsedTimeNano(), (event.getOperation().getElapsedTimeNano()/limit));
+			tlogger.info("runTNT4JEvent: runs=\"{0}\", elapsed.nsec={1}, nsec/call={2}", limit,
+					event.getOperation().getElapsedTimeNano(), (event.getOperation().getElapsedTimeNano() / limit));
 		}
 		return event;
 	}
-	
-	static private TrackingEvent runLog4JEvent(String msg, String opName, OpLevel sev, String[] cids, String location, int limit) {
+
+	static private TrackingEvent runLog4JEvent(String msg, String opName, OpLevel sev, String[] cids, String location,
+			int limit) {
 		TrackingEvent event = tlogger.newEvent(sev, opName, cids[0], msg);
 		event.setCorrelator(cids);
 		eventCount++;
@@ -190,11 +187,9 @@ public class TNT4JTest {
 			}
 		} finally {
 			event.stop();
-			tlogger.info("runLog4JEvent: runs={0}, elapsed.nsec={1}, nsec/call={2}, method={3}, caller={4}",
-						limit, event.getOperation().getElapsedTimeNano(),
-						(event.getOperation().getElapsedTimeNano()/limit),
-						Utils.getCurrentStackFrame(), 
-						Utils.getCallingStackFrame());
+			tlogger.info("runLog4JEvent: runs={0}, elapsed.nsec={1}, nsec/call={2}, method={3}, caller={4}", limit,
+					event.getOperation().getElapsedTimeNano(), (event.getOperation().getElapsedTimeNano() / limit),
+					Utils.getCurrentStackFrame(), Utils.getCallingStackFrame());
 		}
 		return event;
 	}
@@ -202,47 +197,49 @@ public class TNT4JTest {
 
 class MyActivityHandler implements ActivityListener {
 	@Override
-    public void started(Activity activity) {
-		System.out.println("activity.id=" + activity.getTrackingId() 
-				+ ", activity.name=" + activity.getName() 
+	public void started(Activity activity) {
+		System.out.println("activity.id=" + activity.getTrackingId() + ", activity.name=" + activity.getName()
 				+ ", started=" + activity.getStartTime());
 	}
 
 	@Override
-    public void stopped(Activity activity) {
+	public void stopped(Activity activity) {
 		// post processing of activity: enrich activity with application metrics
 		PropertySnapshot snapshot = new PropertySnapshot("TestApp", "APPL_METRICS");
 		snapshot.add("appl.activity.count", TNT4JTest.activityCount);
 		snapshot.add("appl.event.count", TNT4JTest.eventCount);
 		activity.add(snapshot); // add property snapshot to activity
-		System.out.println("activity.id=" + activity.getTrackingId() 
-				+ ", activity.name=" + activity.getName() 
-				+ ", elapsed.usec=" + activity.getElapsedTimeUsec() 
-				+ ", snap.count=" + activity.getSnapshotCount() 
-				+ ", id.count=" + activity.getIdCount()
-				);
-    }
+		System.out.println("activity.id=" + activity.getTrackingId() + ", activity.name=" + activity.getName()
+				+ ", elapsed.usec=" + activity.getElapsedTimeUsec() + ", snap.count=" + activity.getSnapshotCount()
+				+ ", id.count=" + activity.getIdCount());
+	}
 }
 
 class MySinkErrorHandler implements SinkErrorListener {
+	@Override
 	public void sinkError(SinkError event) {
-	    System.out.println("onSinkError: " + event);
-	    if (event.getCause() != null) event.getCause().printStackTrace();		
+		System.out.println("onSinkError: " + event);
+		if (event.getCause() != null) {
+			event.getCause().printStackTrace();
+		}
 	}
 }
 
 class MySinkLogHandler implements SinkLogEventListener {
+	@Override
 	public void sinkLogEvent(SinkLogEvent event) {
-	    // System.out.println("sink.LOG: sev=" + event.getSeverity() + ", source=" + event.getSource() + ", msg=" + event.getSinkObject());
+		// System.out.println("sink.LOG: sev=" + event.getSeverity() + ", source=" + event.getSource() + ", msg=" +
+		// event.getSinkObject());
 	}
 }
 
-class MyDumpProvider extends DefaultDumpProvider {	
+class MyDumpProvider extends DefaultDumpProvider {
 	private long startTime = 0;
+
 	public MyDumpProvider(String name, String cat) {
-	    super(name, cat);
-	    startTime = TimeService.currentTimeMillis();
-    }
+		super(name, cat);
+		startTime = TimeService.currentTimeMillis();
+	}
 
 	@Override
 	public DumpCollection getDump() {
@@ -251,21 +248,23 @@ class MyDumpProvider extends DefaultDumpProvider {
 		dump.add("appl.elapsed.ms", (TimeService.currentTimeMillis() - startTime));
 		dump.add("appl.activity.count", TNT4JTest.activityCount);
 		dump.add("appl.event.count", TNT4JTest.eventCount);
-		return dump;		
+		return dump;
 	}
 }
 
 class DumpNotify implements DumpListener {
 
 	@Override
-    public void onDumpEvent(DumpEvent event) {
+	public void onDumpEvent(DumpEvent event) {
 		switch (event.getType()) {
 		case DumpProvider.DUMP_BEFORE:
 		case DumpProvider.DUMP_AFTER:
 		case DumpProvider.DUMP_COMPLETE:
 		case DumpProvider.DUMP_ERROR:
-		    System.out.println("onDump: " + event);
-		    if (event.getCause() != null) event.getCause().printStackTrace();
+			System.out.println("onDump: " + event);
+			if (event.getCause() != null) {
+				event.getCause().printStackTrace();
+			}
 		}
-    }
+	}
 }
