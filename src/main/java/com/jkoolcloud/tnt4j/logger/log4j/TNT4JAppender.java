@@ -515,7 +515,7 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 				// report a single tracking event as part of an activity
 				activity = logger.newActivity(tev.getSeverity(), event.getThreadName());
 				activity.start();
-				activity.setResource(event.getLocationInformation().getClassName());
+				activity.setResource(event.getLoggerName());
 				activity.setSource(tev.getSource()); // use event's source name for this activity
 				activity.setException(ex);
 				activity.setStatus(ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END);
@@ -577,9 +577,8 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 		TrackingEvent event = logger.newEvent(jev.getLocationInformation().getMethodName(), eventMsg);
 		event.getOperation().setSeverity(level);
 		event.setTag(jev.getThreadName());
-		event.getOperation().setResource(jev.getLocationInformation().getClassName());
-		event.setLocation(
-				jev.getLocationInformation().getFileName() + ":" + jev.getLocationInformation().getLineNumber());
+		event.getOperation().setResource(jev.getLoggerName());
+		event.setLocation(jev.getLocationInformation().getFileName() + ":" + jev.getLocationInformation().getLineNumber());
 		event.setSource(logger.getConfiguration().getSourceFactory().newSource(jev.getLoggerName()));
 
 		for (Map.Entry<String, String> entry : attrs.entrySet()) {
