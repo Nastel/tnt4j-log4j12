@@ -4,7 +4,7 @@
 
     <groupId>com.jkoolcloud.tnt4j.logger</groupId>
     <artifactId>tnt4j-log4j12</artifactId>
-    <version>0.2</version>
+    <version>0.3</version>
     <packaging>jar</packaging>
 
     <name>tnt4j-log4j12</name>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>com.jkoolcloud</groupId>
             <artifactId>tnt4j</artifactId>
-            <version>2.6</version>
+            <version>2.7</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
