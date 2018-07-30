@@ -15,7 +15,6 @@
  */
 package com.jkoolcloud.tnt4j.logger.log4j;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -31,7 +30,12 @@ import com.jkoolcloud.tnt4j.TrackingLogger;
 import com.jkoolcloud.tnt4j.config.ConfigFactory;
 import com.jkoolcloud.tnt4j.config.DefaultConfigFactory;
 import com.jkoolcloud.tnt4j.config.TrackerConfig;
-import com.jkoolcloud.tnt4j.core.*;
+import com.jkoolcloud.tnt4j.core.ActivityStatus;
+import com.jkoolcloud.tnt4j.core.OpCompCode;
+import com.jkoolcloud.tnt4j.core.OpLevel;
+import com.jkoolcloud.tnt4j.core.OpType;
+import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.core.ValueTypes;
 import com.jkoolcloud.tnt4j.logger.AppenderConstants;
 import com.jkoolcloud.tnt4j.logger.AppenderTools;
 import com.jkoolcloud.tnt4j.source.SourceType;
@@ -478,7 +482,7 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 					: cFactory.getConfig(sourceName, sourceType, cProperties));
 			logger = TrackingLogger.getInstance(config.build());
 			logger.open();
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			LogLog.error(
 					"Unable to create tracker instance=" + getName() + ", config.factory=" + cFactory + ", source.name="
 							+ sourceName + ", source.type=" + sourceType + ", snapshot.category=" + snapCategory,
