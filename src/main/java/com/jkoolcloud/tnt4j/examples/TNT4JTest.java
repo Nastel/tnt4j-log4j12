@@ -109,7 +109,6 @@ public class TNT4JTest {
 		tlogger.tnt(activity); // log and report activity
 
 		System.out.println("Logging stats: " + tlogger.getStats());
-		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size());
 		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size() + ", stack.size="
 				+ TrackingLogger.getAllTrackerStackTrace().size());
 
