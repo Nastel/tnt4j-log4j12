@@ -78,6 +78,6 @@ TNT4J-LOG4J12 depends on the following external packages:
 * TNT4J-API (http://nastel.github.io/TNT4J/)
 * Apache Log4J 1.2.17 (http://logging.apache.org/log4j/1.2/)
 
-Please use JCenter or Maven and these dependencies will be downloaded automatically. 
+Please use JCenter or Maven and these dependencies will be downloaded automatically.
 
 tnt4j-log4j12 requires TNT4J. You will therefore need to point TNT4J to it's property file via the -Dtnt4j.config argument. This property file is located here in GitHub under the /config directory. If using JCenter or Maven, it can be found in the zip assembly along with the source code and javadoc.
