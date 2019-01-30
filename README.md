@@ -72,7 +72,7 @@ See `config/tnt4j.properties` for TNT4J configuration: factories, formatters, li
 How to Build tnt4j-log4j12
 =========================================
 Requirements
-* JDK 1.7+
+* JDK 1.8+
 
 TNT4J-LOG4J12 depends on the following external packages:
 * TNT4J-API (http://nastel.github.io/TNT4J/)
