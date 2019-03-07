@@ -68,7 +68,7 @@ public class Log4JEventSink extends AbstractEventSink {
 	 */
 	public Log4JEventSink(String name, Properties props, EventFormatter frmt) {
 		super(name, frmt);
-		open();
+		_open();
 	}
 
 	@Override
@@ -145,14 +145,14 @@ public class Log4JEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public synchronized void open() {
+	protected synchronized void _open() {
 		if (logger == null) {
 			logger = Logger.getLogger(getName());
 		}
 	}
 
 	@Override
-	public void close() throws IOException {
+	protected void _close() throws IOException {
 	}
 
 	@Override
