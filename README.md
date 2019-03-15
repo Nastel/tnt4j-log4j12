@@ -52,7 +52,7 @@ log4j.appender.tnt4j.SourceName=com.log4j.Test
 log4j.appender.tnt4j.SourceType=APPL
 log4j.appender.tnt4j.MetricsOnException=true
 log4j.appender.tnt4j.MetricsFrequency=60
-log4j.appender.tnt4j.layout=org.apache.log4j.PatternLayout
+log4j.appender.tnt4j.layout=org.apache.log4j.EnhancedPatternLayout
 log4j.appender.tnt4j.layout.ConversionPattern=%d{ABSOLUTE} %-5p [%c{1}] %m%n
 ```
 Running Samples
